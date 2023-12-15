@@ -27,6 +27,10 @@ def createPlaylist():
 def getPlaylist(playlist_id):
     return ytmusic.get_playlist(playlist_id)
 
+@app.delete("/v1/playlists/<playlist_id>")
+def deletePlaylist(playlist_id):
+    return ytmusic.delete_playlist(playlist_id)
+
 @app.post("/v1/playlists/<playlist_id>/add-songs")
 def addToPlaylist(playlist_id):
     request_data = request.get_json()
