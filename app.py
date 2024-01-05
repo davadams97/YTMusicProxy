@@ -7,30 +7,29 @@ app = Flask(__name__)
 
 @app.get("/v1/playlists")
 def get_playlists():
-    if 'authorization' in request.headers:
-        bearer_token = request.headers['authorization']
-        yt_music = YTMusic({'authorization': bearer_token})
-        return yt_music.get_library_playlists()
-    else:
+    if 'authorization' not in request.headers:
         abort(401, description="You are not authorized to view this content")
+
+    bearer_token = request.headers['authorization']
+    yt_music = YTMusic({'authorization': bearer_token})
+    return yt_music.get_library_playlists()
 @app.post("/v1/playlists")
 def create_playlist():
-
-    if 'authorization' in request.headers:
-        bearer_token = request.headers['authorization']
-        yt_music = YTMusic({'authorization': bearer_token})
-
-        request_data = request.get_json()
-
-        title = request_data['title']
-        description = request_data.get('description', '')
-        privacy_status = request_data.get('privacyStatus', 'PRIVATE')
-        video_ids = request_data.get('videoIds', None)
-        source_playlist = request_data.get('sourcePlaylist', None)
-
-        return yt_music.create_playlist(title, description, privacy_status, video_ids, source_playlist)
-    else:
+    if 'authorization' not in request.headers:
         abort(401, description="You are not authorized to view this content")
+
+    bearer_token = request.headers['authorization']
+    yt_music = YTMusic({'authorization': bearer_token})
+
+    request_data = request.get_json()
+
+    title = request_data['title']
+    description = request_data.get('description', '')
+    privacy_status = request_data.get('privacyStatus', 'PRIVATE')
+    video_ids = request_data.get('videoIds', None)
+    source_playlist = request_data.get('sourcePlaylist', None)
+
+    return yt_music.create_playlist(title, description, privacy_status, video_ids, source_playlist)
 
 @app.get("/v1/playlists/<playlist_id>")
 def get_playlist(playlist_id):
